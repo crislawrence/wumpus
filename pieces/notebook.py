@@ -45,7 +45,6 @@ class Notebook:
 
     def to_json(self):
         json_array = []
-        pprint(self.cavern_map)
         for mapped_site in self.cavern_map:
             json_object = {
                             "cave_id": mapped_site.cave.id,
@@ -55,13 +54,11 @@ class Notebook:
                             ]
                           }
             json_array.append(json_object)
-        pprint(json_array)
         return json_array
 
     @staticmethod
     def from_json(cavern_system, json_array):
         cavern_map = []
-        pprint(json_array)
         for json_object in json_array:
             cave = cavern_system.get_cave(json_object['cave_id'])
             status_messages = []
@@ -69,7 +66,6 @@ class Notebook:
                 status_messages.append(StatusMessage(warning['type'], warning['source'], warning['content']))
             mapped_site = Mapped_Site(cave, status_messages)
             cavern_map.append(mapped_site)
-            pprint(cavern_map)
         return cavern_map
 
 

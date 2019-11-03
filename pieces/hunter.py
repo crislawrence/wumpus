@@ -1,22 +1,29 @@
-from pprint import pprint
-
 from status_message import StatusMessage
-from pieces.cavern_system import CavernSystem
 from pieces.notebook import Notebook
+
 
 class Hunter:
 
     ARROW_COUNT = 5
 
     def __init__(self, cavern_system, cave_id, quiver=None, cavern_map=None, hazards=None):
+        """
+        Initialize the hunter.  Uses the cavern system to find the cave associated with the cave id.  The optional
+        parameters are used when the hunter is being unmarshalled from the client-side session.
+        :param cavern_system: the configuration of the caves
+        :param cave_id: id of the cave the hunter is in
+        :param quiver: contains a limited number of arrows the hunter may use to kill the wumpus
+        :param cavern_map: a map of the known portions of the cavern system
+        :param hazards: list of hazards
+        """
         self.alive = True
         self.quiver = quiver if quiver else Hunter.ARROW_COUNT
         self.cavern_system = cavern_system
         self.cave = self.cavern_system.get_cave(cave_id)
         self.notebook = Notebook(cavern_map=cavern_map)
         if not cavern_map and hazards:
-            status = self.check_for_hazards(hazards)
-            self.notebook.note_position(self.cave, status)
+            warnings = self.check_for_hazards(hazards)
+            self.notebook.note_position(self.cave, warnings)
 
     def start_up(self, hazards):
         status = [StatusMessage('INFO', 'GENERAL', f"You are starting in cave {self.cave.id}")]
@@ -26,25 +33,54 @@ class Hunter:
         return status
 
     def move(self, hazards, cave_id, via_bat=False):
+        """
+        Hunter enters a cave.  It is possible that the hunter was moved by a bat if the hunter had stumbled into
+        a bad colony.
+        :param hazards: list of game hazards
+        :param cave_id: id of cave into which hunter enters (or is dropped)
+        :param via_bat: true if the hunter was dropped into the cave via a bat and false otherwise
+        :return: a tuple containing the game state and errors if any.  The error is a server side validation of the
+        choice of cave to enter.
+        """
         status = []
         errors = []
+
+        # The hunter may only enter a cave adjoining the one s/he came from unless transported via a bat.
         if cave_id in self.cave.neighboring_caves or via_bat:
+
+            # Identify the new cave
+            self.cave = self.cavern_system.get_cave(cave_id)
+
+            # Provide informational messages appropriate to the circumstance.
             if via_bat:
                 status.extend([StatusMessage('INFO', 'BAT_COLONY',
                                              f"You are being dropped into cave {cave_id}")])
             else:
                 status.extend([StatusMessage('INFO', 'GENERAL',
                                              f"You are moving into cave {cave_id}")])
-            self.cave = self.cavern_system.get_cave(cave_id)
-            status.extend([StatusMessage('INFO', 'GENERAL', f"{self}")])
-            status.extend(self.check_for_encounters(hazards))
 
-            if self.alive:
+            status.extend([StatusMessage('INFO', 'GENERAL', f"{self}")])
+
+            # Check to see if any hazards are encountered in this cave.  Which, in most cases, will result in the
+            # demise of the hunter.
+            dangers = self.check_for_encounters(hazards)
+            status.extend(dangers)
+
+            # Determine whether the hunter encountered a bat colony.  That doesn't preclude the hunter being
+            # deceased since the wumpus map also be resident in the same cave.
+            encountered_bat_colony = [danger for danger in dangers if danger.source == 'BAT_COLONY']
+
+            # If the hunter remains alive and s/he wasn't ferried off by bats after entering the cave, check to see
+            # if any hazards are proximate to this cave and note the discoveries in the notebook.
+            if self.alive and not encountered_bat_colony:
                 warnings = self.check_for_hazards(hazards)
                 status.extend(warnings)
                 self.notebook.note_position(self.cave, warnings)
+
+        # In the unlikely event that the user called the ajax post directly with an invalid cave id selection.
         else:
             errors.append("The cave you specified does not adjoin the one you are in.")
+
         return status, errors
 
     def shoot(self, wumpus, cave_id, hazards):
@@ -53,14 +89,13 @@ class Hunter:
         if self.quiver > 0:
             self.quiver -= 1
             status.extend([StatusMessage('INFO', 'GENERAL',
-                                        f"You've shot an arrow into {cave_id}.  "
-                                        f"You have {self.quiver} arrows remaining.")])
+                                         f"You've shot an arrow into {cave_id}.  "
+                                         f"You have {self.quiver} arrows remaining.")])
             status.extend(wumpus.react_to_shot(cave_id, self, hazards))
         else:
             status.extend([StatusMessage('WARNING', 'GENERAL',
-                                        "You have no arrows left.  All you can do is avoid the wumpus.")])
+                                         "You have no arrows left.  All you can do is avoid the wumpus.")])
         return status, errors
-
 
     def killed(self):
         self.alive = False
@@ -78,6 +113,7 @@ class Hunter:
     def check_for_encounters(self, hazards):
         status = []
         for hazard in hazards:
+            print(hazard)
             encounter = hazard.check_encounter(self, hazards=hazards)
             if encounter:
                 status.extend(encounter)
