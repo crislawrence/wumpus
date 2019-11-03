@@ -67,8 +67,7 @@ class Game:
             os.remove(item)
 
         # Create 'random' seed if no seed is provided
-        if not seed:
-            seed = datetime.now()
+        seed = int(seed) if seed else datetime.now()
         random.seed(seed)
 
 

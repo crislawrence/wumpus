@@ -2,7 +2,7 @@ import os
 from datetime import timedelta
 
 DEBUG = True
-SEED = 200
+SEED = os.environ.get("SEED", None)
 ENV = 'development'
 JSONIFY_PRETTYPRINT_REGULAR = False
 PROPAGATE_EXCEPTIONS = True
