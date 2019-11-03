@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <script>
+        $(document).ready ( function() {
+
+            let arrows = 5;
+            let actionForm = $("#action_form");
+            let caveSelector = $("#cave_id");
+            let errorMessages = $("#error_messages");
+            let statusMessages = $("#status_messages");
+            let errorBadge = $(".badge-danger");
+            let statusBadge = $(".badge-info");
+            let notebook = $("#notebook");
+            errorBadge.hide();
+
+            actionForm.on('submit', function (event) {
+                event.preventDefault();
+                errorBadge.hide();
+                errorMessages.empty();
+                statusBadge.hide();
+                let play = $("#play").val();
+                let cave_id = caveSelector.val();
+                if(arrows === 1 && play==='s') {
+                    let answer = confirm("This is your last arrow.  Are you sure you want to shoot it?");
+                    if(!answer) {
+                        return;
+                    }
+                }
+                $.ajax({
+                    url: "{{url_for('play')}}",
+                    data: JSON.stringify({"play": play, "cave_id": cave_id}),
+                    dataType: "json",
+                    contentType: "application/json",
+                    type: 'POST',
+                    success: function(response) {
+                        console.log(response);
+                        let status = response['status'];
+                        let cave_ids = response['cave_ids'];
+                        arrows = response['arrows'];
+                        let game_over = response['game_over'];
+                        let notes = response['notes'];
+                        let optionList = "<option value=''>Choose...</option>";
+                        cave_ids.forEach(function(item) {
+                            optionList += "<option value='" + item + "'>" + item + "</option>";
+                        });
+                        caveSelector.html(optionList);
+
+                        if(status) {
+                            statusBadge.show();
+                        }
+                        let statusList = "";
+                        status.forEach(function(item) {
+                            console.log(item.type);
+                            let color_class = 'text-default';
+                            if(item.type === 'WARNING') {
+                                color_class = 'text-warning'
+                            }
+                            if(item.type === 'TERMINAL') {
+                                color_class = 'text-danger'
+                            }
+                            statusList += "<li class='list-group-item " + color_class + "'>" + item.content + "</li>";
+                        });
+                        statusMessages.html(statusList);
+
+                        if(game_over) {
+                            let game_button = "<a class='btn btn-info' href='/'>New Game?</a>";
+                            actionForm.html(game_button)
+                        }
+                        if(notes) {
+                            notebook.html(notes);
+                        }
+                    },
+                    error: function (request) {
+                        let errors = $.parseJSON(request.responseText).errors;
+                        if(errors) {
+                            errorBadge.show();
+                        }
+                        let errorList = "";
+                        errors.forEach(function(item) {
+                           errorList += "<li>" + item + "</li>";
+                        });
+                        errorMessages.html(errorList);
+
+                    }
+                });
+            });
+        });
+    </script>
+
+    <div class="page-header">
+        <h1>Game Board</h1>
+    </div>
+
+
+    <div class="row">
+        <div class="col-5">
+            <div class="badge badge-danger">Errors</div>
+            <ul id="error_messages" class="text-danger"></ul>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header text-center text-white bg-info">Player's Move...</div>
+                <div class="card-body">
+                    <div class="card-text">
+                        <form action="{{ url_for('play') }}" method="post" id="action_form">
+                            <div class="form-row">
+
+                                <label for="play" class="col-form-label">Action:</label>
+                                <select class="col-2 custom-select mr-3" name="play" id="play">
+                                    <option value="">Choose...</option>
+                                    <option value="m">Enter</option>
+                                    <option value="s">Shoot</option>
+                                </select>
+
+                                <label for="cave_id" class="col-form-label">Cave:</label>
+                                <select class="custom-select col-2 mr-3" name="cave_id" id="cave_id">
+                                    <option value="">Choose...</option>
+                                    {% for cave_id in game.hunter.cave.neighboring_caves %}
+                                        <option value="{{ cave_id }}">{{ cave_id }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <button class="btn btn-primary col-1" type="submit">Go</button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-5">
+
+            <div class="card">
+                <div class="card-header text-center text-white bg-info">Status</div>
+                <div class="card-body">
+                    <div class="card-text">
+                        <ul id="status_messages" class="list-group">
+                            {% for item in status %}
+                                <li class="list-group-item">{{ item.content }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-7">
+
+             <div class="card text-center">
+                 <div class="card-header text-white bg-info">Field Notes</div>
+                 <div class="card-body">
+                    <div class="card-text" id="notebook">
+                        {{ cavern_map }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>console.log("{{ config['ENV'] }}")</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Hunt the Wumpus</title>
+    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" />
+    <link rel="stylesheet" href="https://getbootstrap.com/docs/4.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a id="wumpus_logo" class="navbar-brand" href="{{url_for('play')}}">
+            <img src="{{url_for('static', filename='images/big-mouth-monster.svg') }}" alt="Hunt the Wumpus logo" height="100px">
+            <h3>Hunt The Wumpus</h3>
+        </a>
+        <button class="navbar-toggler" type="button"
+                data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarNav" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav mr-auto">
+
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div class="content container-fluid">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<!-- Sticky footer -->
+<footer class="footer">
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-12">
+                  Icons made by
+                  <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
+                  from
+                  <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+              </div>
+          </div>
+      </div>
+
+</footer>
+
+</body>
+</html>
