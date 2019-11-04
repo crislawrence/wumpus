@@ -46,7 +46,7 @@ def play():
     cave_id = int(cave_id) if cave_id else None
 
     if action not in ['m', 's']:
-        errors.append("You must either step or shoot into an adjoining cave.")
+        errors.append("You must either enter or shoot into an adjoining cave.")
     if cave_id not in range(1, 21):
         errors.append("You must select a valid cave id.")
 

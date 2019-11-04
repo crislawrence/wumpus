@@ -64,7 +64,7 @@
                         statusMessages.html(statusList);
 
                         if(game_over) {
-                            let game_button = "<a class='btn btn-info' href='/'>New Game?</a>";
+                            let game_button = "<div class='text-center'><a class='btn btn-primary' href='/'>New Game?</a></div>";
                             actionForm.html(game_button)
                         }
                         if(notes) {
@@ -143,7 +143,12 @@
                     <div class="card-text">
                         <ul id="status_messages" class="list-group">
                             {% for item in status %}
-                                <li class="list-group-item">{{ item.content }}</li>
+                                {% if item.type == 'WARNING' %}
+                                    {% set message_color = 'text-warning'  %}
+                                {% else %}
+                                    {% set message_color = 'text-default' %}
+                                {% endif %}
+                                <li class="list-group-item {{ message_color }}">{{ item.content }}</li>
                             {% endfor %}
                         </ul>
                     </div>

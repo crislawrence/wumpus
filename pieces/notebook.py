@@ -23,7 +23,8 @@ class Notebook:
                 dot.attr('node',color='yellow')
             else:
                 dot.attr('node', color='green')
-            dot.node(f'{mapped_cave.cave.id}', f'{mapped_cave.cave.id}')
+            current_location = '*' if mapped_cave.cave.id == step else ''
+            dot.node(f'{mapped_cave.cave.id}', f'{mapped_cave.cave.id} {current_location}')
         for tunnel in tunnels:
             dot.attr('node', color='black')
             dot.edge(f'{tunnel[0]}', f'{tunnel[1]}')
