@@ -19,12 +19,16 @@ class Notebook:
         tunnels = self.find_tunnels()
         dot = Graph(comment='Your notebook - explored caves', format='svg')
         for mapped_cave in self.cavern_map:
+            warning_sources = ""
             if mapped_cave.warnings:
                 dot.attr('node',color='yellow')
+                warning_sources = ",".join([warning.source for warning in mapped_cave.warnings])
             else:
                 dot.attr('node', color='green')
             current_location = '*' if mapped_cave.cave.id == step else ''
-            dot.node(f'{mapped_cave.cave.id}', f'{mapped_cave.cave.id} {current_location}')
+            dot.node(f'{mapped_cave.cave.id}',
+                     f'{mapped_cave.cave.id} {current_location}',
+                     _attributes=[('tooltip',f'{warning_sources}')])
         for tunnel in tunnels:
             dot.attr('node', color='black')
             dot.edge(f'{tunnel[0]}', f'{tunnel[1]}')
