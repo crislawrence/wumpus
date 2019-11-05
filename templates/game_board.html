@@ -117,8 +117,12 @@
                                     {% endfor %}
                                 </select>
 
-                                <button class="btn btn-primary col-1 mx-2 move" id="enter">Enter</button>
-                                <button class="btn btn-primary col-1 mx-2 move" id="shoot">Shoot</button>
+                                <button class="btn btn-primary col-1 mx-2 move" id="enter">
+                                    Enter <img class="mx-2" src="{{ url_for('static', filename='images/enter.png') }}" width="32px" />
+                                </button>
+                                <button class="btn btn-primary col-1 mx-2 move" id="shoot">
+                                    Shoot <img class="mx-2" src="{{ url_for('static', filename='images/shoot.png') }}" width="32px" />
+                                </button>
 
                             </div>
 
