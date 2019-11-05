@@ -43,7 +43,16 @@ class Notebook:
                 tunnels.add(tunnel)
         return tunnels
 
-    def note_position(self, cave, warnings):
+    def note_position(self, cave, warnings, wumpus_moving=False):
+
+        # Previous indications of the presence of the wumpus are no longer reliable since the wumpus is now moving.
+        if wumpus_moving:
+            for mapped_site in self.cavern_map:
+                old_wumpus_warning = [warning for warning in mapped_site.warnings if warning.source == 'WUMPUS']
+                if(old_wumpus_warning):
+                    mapped_site.warnings.remove(old_wumpus_warning[0])
+            pprint(self.cavern_map)
+
         # Avoid adding duplicates if the hunter backtracks
         if cave.id not in [mapped_site.cave.id for mapped_site in self.cavern_map]:
             self.cavern_map.append(Mapped_Site(cave, warnings))

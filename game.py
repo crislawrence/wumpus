@@ -46,12 +46,15 @@ class Game:
             hunter_cave_id_options = list(set(range(1, 21)) - set(Hazard.hazard_cave_ids))
             self.hunter = Hunter(self.cavern_system, random.choice(hunter_cave_id_options))
 
-        # Cavern system configuration and starting positions of all hazards (note that wumpus will move about once
-        # awake.
-        if debug:
-            #pprint.pprint(self.cavern_system.cavern_system)
-            for hazard in self.hazards:
-                print(hazard)
+    def display_configuration(self):
+        """
+        Logs the cavern system layout and starting positions of all hazards.  Note that the wumpus will move about
+        once awoken.
+        :return:
+        """
+        # pprint.pprint(self.cavern_system.cavern_system)
+        for hazard in self.hazards:
+            print(hazard)
 
     @ staticmethod
     def start_up(seed=None):
@@ -69,10 +72,6 @@ class Game:
         # Create 'random' seed if no seed is provided
         seed = int(seed) if seed else datetime.now()
         random.seed(seed)
-
-
-    def get_initial_status(self):
-        return self.status
 
     def to_json(self):
         return {

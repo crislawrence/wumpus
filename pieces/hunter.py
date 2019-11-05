@@ -32,7 +32,7 @@ class Hunter:
         status.extend(warnings)
         return status
 
-    def move(self, hazards, cave_id, via_bat=False):
+    def enter(self, cave_id, hazards, via_bat=False):
         """
         Hunter enters a cave.  It is possible that the hunter was moved by a bat if the hunter had stumbled into
         a bad colony.
@@ -61,6 +61,9 @@ class Hunter:
 
             status.extend([StatusMessage('INFO', 'GENERAL', f"{self}")])
 
+            wumpus = [hazard for hazard in hazards if hazard.hazard_type == 'WUMPUS'][0]
+            wumpus.move()
+
             # Check to see if any hazards are encountered in this cave.  Which, in most cases, will result in the
             # demise of the hunter.
             dangers = self.check_for_encounters(hazards)
@@ -75,7 +78,7 @@ class Hunter:
             if self.alive and not encountered_bat_colony:
                 warnings = self.check_for_hazards(hazards)
                 status.extend(warnings)
-                self.notebook.note_position(self.cave, warnings)
+                self.notebook.note_position(self.cave, warnings, not wumpus.asleep)
 
         # In the unlikely event that the user called the ajax post directly with an invalid cave id selection.
         else:
@@ -83,15 +86,35 @@ class Hunter:
 
         return status, errors
 
-    def shoot(self, wumpus, cave_id, hazards):
+    def shoot(self, cave_id, hazards):
         status = []
         errors = []
+
+        status.extend([StatusMessage('INFO', 'GENERAL', f"{self}")])
+
         if self.quiver > 0:
+
+            wumpus = [hazard for hazard in hazards if hazard.hazard_type == 'WUMPUS'][0]
+
             self.quiver -= 1
             status.extend([StatusMessage('INFO', 'GENERAL',
                                          f"You've shot an arrow into {cave_id}.  "
                                          f"You have {self.quiver} arrows remaining.")])
-            status.extend(wumpus.react_to_shot(cave_id, self, hazards))
+            status.extend(wumpus.react_to_shot(cave_id))
+
+            wumpus = [hazard for hazard in hazards if hazard.hazard_type == 'WUMPUS'][0]
+            wumpus.move()
+
+            # Check to see if the wumpus has entered this cave, which will result in the demise of the hunter.
+            dangers = self.check_for_encounters([wumpus])
+            status.extend(dangers)
+
+            # If the hunter remains alive, check to see if the wumpus is now proximate to this cave and note
+            # that finding in the notebook.
+            if self.alive:
+                warnings = self.check_for_hazards(hazards)
+                status.extend(warnings)
+                self.notebook.note_position(self.cave, warnings, not wumpus.asleep)
         else:
             status.extend([StatusMessage('WARNING', 'GENERAL',
                                          "You have no arrows left.  All you can do is avoid the wumpus.")])

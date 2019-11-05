@@ -5,7 +5,8 @@
         $(document).ready ( function() {
 
             let arrows = 5;
-            let actionForm = $("#action_form");
+            let choices = $("#choices");
+            let moveButtons = $(".move");
             let caveSelector = $("#cave_id");
             let errorMessages = $("#error_messages");
             let statusMessages = $("#status_messages");
@@ -14,22 +15,22 @@
             let notebook = $("#notebook");
             errorBadge.hide();
 
-            actionForm.on('submit', function (event) {
-                event.preventDefault();
+            moveButtons.on('click', function () {
+
                 errorBadge.hide();
                 errorMessages.empty();
                 statusBadge.hide();
-                let play = $("#play").val();
+                let move = this.id;
                 let cave_id = caveSelector.val();
-                if(arrows === 1 && play==='s') {
+                if(arrows === 1 && move==='shoot') {
                     let answer = confirm("This is your last arrow.  Are you sure you want to shoot it?");
                     if(!answer) {
                         return;
                     }
                 }
                 $.ajax({
-                    url: "{{url_for('play')}}",
-                    data: JSON.stringify({"play": play, "cave_id": cave_id}),
+                    url: "{{url_for('move')}}",
+                    data: JSON.stringify({"move": move, "cave_id": cave_id}),
                     dataType: "json",
                     contentType: "application/json",
                     type: 'POST',
@@ -65,7 +66,7 @@
 
                         if(game_over) {
                             let game_button = "<div class='text-center'><a class='btn btn-primary' href='/'>New Game?</a></div>";
-                            actionForm.html(game_button)
+                            choices.html(game_button)
                         }
                         if(notes) {
                             notebook.html(notes);
@@ -106,28 +107,21 @@
                 <div class="card-header text-center text-white bg-info">Player's Move...</div>
                 <div class="card-body">
                     <div class="card-text">
-                        <form action="{{ url_for('play') }}" method="post" id="action_form">
-                            <div class="form-row">
 
-                                <label for="play" class="col-form-label">Action:</label>
-                                <select class="col-2 custom-select mr-3" name="play" id="play">
-                                    <option value="">Choose...</option>
-                                    <option value="m">Enter</option>
-                                    <option value="s">Shoot</option>
-                                </select>
+                            <div class="form-row" id="choices">
 
-                                <label for="cave_id" class="col-form-label">Cave:</label>
                                 <select class="custom-select col-2 mr-3" name="cave_id" id="cave_id">
-                                    <option value="">Choose...</option>
+                                    <option value="">Choose a Cave...</option>
                                     {% for cave_id in game.hunter.cave.neighboring_caves %}
                                         <option value="{{ cave_id }}">{{ cave_id }}</option>
                                     {% endfor %}
                                 </select>
 
-                                <button class="btn btn-primary col-1" type="submit">Go</button>
+                                <button class="btn btn-primary col-1 mx-2 move" id="enter">Enter</button>
+                                <button class="btn btn-primary col-1 mx-2 move" id="shoot">Shoot</button>
 
                             </div>
-                        </form>
+
                     </div>
                 </div>
             </div>
