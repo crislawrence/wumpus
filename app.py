@@ -69,7 +69,8 @@ def move():
     if errors:
         return jsonify({"errors": errors}), 400
 
-    print(game.hunter.cave.id)
+    # Note that the relevant cave id for the notebook is the cave in which the hunter is located and not the
+    # cave the hunter shoots into (in the event that the hunter took a shot).
     game.hunter.notebook.consult_notebook(game.hunter.cave.id)
 
     cavern_map = None

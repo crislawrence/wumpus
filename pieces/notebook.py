@@ -45,17 +45,22 @@ class Notebook:
 
     def note_position(self, cave, warnings, wumpus_moving=False):
 
-        # Previous indications of the presence of the wumpus are no longer reliable since the wumpus is now moving.
+        # Previous indications of the presence of the wumpus are no longer reliable and potentially misleading since
+        # the wumpus is now moving.
         if wumpus_moving:
             for mapped_site in self.cavern_map:
                 old_wumpus_warning = [warning for warning in mapped_site.warnings if warning.source == 'WUMPUS']
                 if(old_wumpus_warning):
                     mapped_site.warnings.remove(old_wumpus_warning[0])
-            pprint(self.cavern_map)
 
-        # Avoid adding duplicates if the hunter backtracks
-        if cave.id not in [mapped_site.cave.id for mapped_site in self.cavern_map]:
-            self.cavern_map.append(Mapped_Site(cave, warnings))
+        # Avoid adding duplicates if the hunter backtracks.  If the wumpus is moving about the newer version of the
+        # mapped site may contain a warning about the wumpus's proximity.  So we remove the original version in
+        # favor of the newer version.
+        for mapped_site in self.cavern_map:
+            if cave.id == mapped_site.cave.id:
+                self.cavern_map.remove(mapped_site)
+
+        self.cavern_map.append(Mapped_Site(cave, warnings))
 
     def to_json(self):
         json_array = []
