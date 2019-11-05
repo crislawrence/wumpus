@@ -9,7 +9,7 @@ In a directory of your choice, do a git clone of the wumpus repository.
 
 ```bash
 cd <directory path>
-git@github.com:crislawrence/wumpus.git
+git clone git@github.com:crislawrence/wumpus.git
 ```
 
 Enter the project and set up a virtual environment using python 3.7 (assuming the resident
@@ -29,6 +29,10 @@ pip install -r requirements.txt
 
 Copy the .env_example to .env and fill in the .env (note the parent here refers to the parent location for uploads,
 database, db backups and logs discussed earlier):
+
+```bash
+cp .env_example .env
+```
 
 ```
 APPLICATION_SETTINGS=config_default.py (for development) or config.py (for production)

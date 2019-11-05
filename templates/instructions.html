@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="page-header">
+        <h1>Instructions</h1>
+    </div>
+
+    <div>
+        <h2>Scenario</h2>
+        <p>
+            You are a hunter seeking to kill a dangerous beast know as a wumpus.  The wumpus lives in a warren composed
+            of 20 interconnected caves.  Each cave adjoins three other caves.  You have a quiver connecting 5 arrows
+            which you will use to kill the wumpus.
+        </p>
+        <p>
+            There are additional dangerous hazards in the cavern system: bottomless pits and bat colonies.  If you
+            enter a cave with a bottomless pit, you will die.  If you enter a cave housing a bat colony, the bats
+            will collectively pick you up and drop you in some other cave.  The danger is the cave in which you are
+            deposited may either have a bottomless pit or the wumpus.  The wumpus is asleep somewhere in the cavern
+            system at the start of the game.  If you enter the cave with the wumpus, the wumpus will awaken and promptly
+            eat you!
+        </p>
+        <p>
+            In addition to the cave you are in, you something about the three adjoining caves.  If any of those
+            neighboring cave contain a bottomless pit, you will feel a breeze.  If any contain a bat colony, you will
+            hear the flapping of wings.  The wumpus, on the other hand, can be detected when it is within two caves
+            of you because its awful odor extends that far.
+        </p>
+        <p>
+            Be aware that the wumpus may be residing in a cave with a bat colony because the wumpus is too heavy for
+            the bats to life.  The wumpus may also be residing in a cave with a bottomless pit because the wumpus has
+            sucker feet and can stick to the sides of the bottomless pit.  In that case, you won't fall into the
+            abyss if you enter.  The wumpus will awaken, pluck you out of the air and eat you!
+        </p>
+        <p>
+            To kill the wumpus, you must shoot an arrow into the cave in which it is residing.  That means that the
+            wumpus must be in one of the caves adjoining the one you are in.  If you miss the wumpus, the wumpus
+            will awaken and start to move about.  Once awake, every time you shoot an arrow or enter a cave, the
+            wumpus will also enter another cave.  The wumpus can only enter a adjoining cave for each move as it cannot
+            fly.
+        </p>
+    </div>
+    <div>
+        <h2>Field Notes</h2>
+        <p>
+            The field notes display the parts of the cavern system that you have mapped, including where you
+            encountered the feeling, sound, and/or smell associated with each of the various dangers.  But once the
+            wumpus is awake and moving, past indications on the map of the wumpus' location are removed since those
+            notes are no longer relevant.
+        </p>
+        <p>
+            The caves for which nearby hazard have been identified are in yellow.  Those caves known but as yet
+            unexplored are in black.  Those caves having no nearby hazards are in green.  The cave the hunter is
+            currently within is identified with an asterisk.
+        </p>
+    </div>
+
+
+
+{% endblock %}
