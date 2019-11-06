@@ -86,9 +86,9 @@ def move():
                     "game_over": not(game.wumpus.alive and game.hunter.alive),
                     "notes": cavern_map}), 200
 
-@app.route('/instructions', methods=['GET'])
-def instructions():
-    return render_template("instructions.html")
+@app.route('/rules', methods=['GET'])
+def rules():
+    return render_template("rules.html")
 
 
 app.run()

@@ -101,26 +101,27 @@
         </div>
     </div>
 
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="card">
+    <div class="row">
+        <div class="col-5">
+
+            <div class="card mb-5">
                 <div class="card-header text-center text-white bg-info">Player's Move...</div>
                 <div class="card-body">
                     <div class="card-text">
 
                             <div class="form-row" id="choices">
 
-                                <select class="custom-select col-2 mr-3" name="cave_id" id="cave_id">
+                                <select class="custom-select col-4 mr-3" name="cave_id" id="cave_id">
                                     <option value="">Choose a Cave...</option>
                                     {% for cave_id in game.hunter.cave.neighboring_caves %}
                                         <option value="{{ cave_id }}">{{ cave_id }}</option>
                                     {% endfor %}
                                 </select>
 
-                                <button class="btn btn-primary col-1 mx-2 move" id="enter">
+                                <button class="btn btn-primary col-3 mx-2 move" id="enter">
                                     Enter <img class="mx-2" src="{{ url_for('static', filename='images/enter.png') }}" width="32px" />
                                 </button>
-                                <button class="btn btn-primary col-1 mx-2 move" id="shoot">
+                                <button class="btn btn-primary col-3 mx-2 move" id="shoot">
                                     Shoot <img class="mx-2" src="{{ url_for('static', filename='images/shoot.png') }}" width="32px" />
                                 </button>
 
@@ -128,31 +129,25 @@
 
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="row">
-        <div class="col-5">
-
-            <div class="card">
-                <div class="card-header text-center text-white bg-info">Status</div>
-                <div class="card-body">
-                    <div class="card-text">
-                        <ul id="status_messages" class="list-group">
-                            {% for item in status %}
-                                {% if item.type == 'WARNING' %}
-                                    {% set message_color = 'text-warning'  %}
-                                {% else %}
-                                    {% set message_color = 'text-default' %}
-                                {% endif %}
-                                <li class="list-group-item {{ message_color }}">{{ item.content }}</li>
-                            {% endfor %}
-                        </ul>
+                <div class="card">
+                    <div class="card-header text-center text-white bg-info">Status</div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            <ul id="status_messages" class="list-group">
+                                {% for item in status %}
+                                    {% if item.type == 'WARNING' %}
+                                        {% set message_color = 'text-warning'  %}
+                                    {% else %}
+                                        {% set message_color = 'text-default' %}
+                                    {% endif %}
+                                    <li class="list-group-item {{ message_color }}">{{ item.content }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
 
         <div class="col-7">
@@ -167,6 +162,7 @@
             </div>
 
         </div>
+
     </div>
 
 {% endblock %}
