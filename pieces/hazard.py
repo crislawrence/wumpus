@@ -55,11 +55,12 @@ class BatColony(Hazard):
         status = []
         if hunter.cave.id == self.cave.id:
             hunter_cave_id_options = [item for item in list(range(1,21)) if item != self.cave.id]
-            hunter.cave_id = random.choice(hunter_cave_id_options)
+            new_cave_id = random.choice(hunter_cave_id_options)
+            print(type(new_cave_id))
             status.extend(
                 [StatusMessage('INFO', self.hazard_type,
                               "You've stumbled into a bat colony.  "
                               "Some of the bats are carrying you into another cave!")])
-            updated_status, _ = hunter.enter(hazards, hunter.cave_id, via_bat=True)
+            updated_status, _ = hunter.enter(new_cave_id, hazards, via_bat=True)
             status.extend(updated_status)
         return status

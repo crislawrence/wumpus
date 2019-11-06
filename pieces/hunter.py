@@ -102,19 +102,21 @@ class Hunter:
                                          f"You have {self.quiver} arrows remaining.")])
             status.extend(wumpus.react_to_shot(cave_id))
 
-            wumpus = [hazard for hazard in hazards if hazard.hazard_type == 'WUMPUS'][0]
-            wumpus.move()
+            if wumpus.alive:
 
-            # Check to see if the wumpus has entered this cave, which will result in the demise of the hunter.
-            dangers = self.check_for_encounters([wumpus])
-            status.extend(dangers)
+                wumpus = [hazard for hazard in hazards if hazard.hazard_type == 'WUMPUS'][0]
+                wumpus.move()
 
-            # If the hunter remains alive, check to see if the wumpus is now proximate to this cave and note
-            # that finding in the notebook.
-            if self.alive:
-                warnings = self.check_for_hazards(hazards)
-                status.extend(warnings)
-                self.notebook.note_position(self.cave, warnings, not wumpus.asleep)
+                # Check to see if the wumpus has entered this cave, which will result in the demise of the hunter.
+                dangers = self.check_for_encounters([wumpus])
+                status.extend(dangers)
+
+                # If the hunter remains alive, check to see if the wumpus is now proximate to this cave and note
+                # that finding in the notebook.
+                if self.alive:
+                    warnings = self.check_for_hazards(hazards)
+                    status.extend(warnings)
+                    self.notebook.note_position(self.cave, warnings, not wumpus.asleep)
         else:
             status.extend([StatusMessage('WARNING', 'GENERAL',
                                          "You have no arrows left.  All you can do is avoid the wumpus.")])
