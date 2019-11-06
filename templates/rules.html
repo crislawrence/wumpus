@@ -5,191 +5,253 @@
         <h1>Rules</h1>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <h2>Objective</h2>
-            <p>
-                You are a hunter seeking a dangerous beast known as a Wumpus.  The Wumpus lives somewhere within a
-                underground warren composed of interconnected caves.  You must track down and slay the beast while
-                avoiding the cavern system's many hazards.
-            </p>
+    <div class="row my-3">
+        <div class="col-1">
+            <h3>Objective</h3>
+        </div>
+        <div class="col-10">
+            You are a hunter seeking a dangerous beast known as a Wumpus.  The Wumpus lives somewhere within a
+            underground warren composed of interconnected caves.  You must track down and slay the beast while
+            avoiding the cavern system's many hazards.
         </div>
     </div>
-    <div class="row">
-        <div class="col-12">
+
+    <div class="row text-center">
+        <div class="col-6">
             <h2>Game Board</h2>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            <div class="card">
-                <div class="card-header text-white bg-info text-center">Cavern System</div>
-                <div class="card-body">
-                    <div class="card-text">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                The cavern system is composed of 20 interconnected caves labeled 1 through 20.
-                            </li>
-                            <li class="list-group-item">
-                                Each cave in the cavern system is linked by tunnels to exactly three other caves.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="card">
-                <div class="card-header text-white bg-info text-center">Hunter</div>
-                <div class="card-body">
-                    <div class="card-text">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                This is you.  The hunter starts the game is a cave containing no hazards.  However,
-                                hazards may exist in neighboring caves.
-                            </li>
-                            <li class="list-group-item">
-                                The hunter (you) is equipped with a quiver containing 5 arrows.  If you exhaust
-                                your complement of arrows without killing the Wumpus, you will be at the mercy of
-                                the Wumpus.  It is just a matter of time until the Wumpus catches up to you
-                            </li>
-                            <li class="list-group-item">
-                                The hunter may either enter an adjoining cave or shoot an arrow into an adjoining
-                                cave.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="card">
-                <div class="card-header text-white bg-info text-center">Status and Field Notes</div>
-                <div class="card-body">
-                    <div class="card-text">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                The status pane provides current information as to the yours whereabouts, whether you
-                                have encountered any hazards or whether any are close by and whether you have slain the
-                                Wumpus.
-                            </li>
-                            <li class="list-group-item">
-                                The field notes display the parts of the cavern system that you have mapped, including
-                                where you encountered the feeling, sound, and/or smell associated with each of the
-                                various potential dangers.  Cave where nearby hazards were detected are shown in
-                                yellow.  Hover over one to see what hazards were noted there.
-                            </li>
-                            <li class="list-group-item">
-                                Once the Wumpus is awake and moving, past indications on the map of the wumpus'
-                                location are removed since those notes are no longer relevant.
-                            </li>
-                            <li class="list-group-item">
-                                Those caves that are known but as yet unexplored are in black.  Those caves having no
-                                nearby hazards are in green.  The cave the hunter is currently within is identified
-                                with an asterisk.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
+        <div class="col-6">
             <h2>Hazards</h2>
         </div>
     </div>
-    <div class="row">
-        <div class="col-4">
+
+    <div class="row mb-2">
+
+        <div class="col-6" id="game_board_accordion">
+
             <div class="card">
-                <div class="card-header text-white bg-info text-center">Bottomless Pit</div>
-                <div class="card-body">
-                    <div class="card-text">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                There is a bottomless pit in each of two of the caves in the cavern system.
-                            </li>
-                            <li class="list-group-item">
-                                If you enter a cave housing a bottomless pit, you will die.
-                            </li>
-                            <li class="list-group-item">
-                                You can tell when a bottomless pit exists in one of the caves adjoining yours because
-                                you will feel a draft coming from it.
-                            </li>
-                            <li class="list-group-item">
-                                The Wumpus may also be residing in a cave with a bottomless pit because the Wumpus has
-                                sucker feet and can stick to the sides of the bottomless pit.  If you should wander
-                                into such a cave, you won't fall into the abyss.  Instead, the Wumpus will awaken,
-                                pluck you out of the air and eat you!
-                            </li>
-                        </ul>
+                <div class="card-header text-center bg-info" id="cavern_system">
+                    <h4 class="mb-0">
+                        <button class="btn btn-link text-white" data-toggle="collapse"
+                                data-target="#collapse_cavern_system"
+                                aria-expanded="true" aria-controls="collapse_cavern_system">
+                            Cavern System
+                        </button>
+                    </h4>
+                </div>
+                <div id="collapse_cavern_system" class="collapse"
+                     aria-labelledby="cavern_system" data-parent="#game_board_accordion">
+                    <div class="card-body">
+                        <div class="card-text">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    The cavern system is composed of 20 interconnected caves labeled 1 through 20.
+                                </li>
+                                <li class="list-group-item">
+                                    Each cave in the cavern system is linked by tunnels to exactly three other caves.
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-4">
+
             <div class="card">
-                <div class="card-header text-white bg-info text-center">Bat Colony</div>
-                <div class="card-body">
-                    <div class="card-text">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                There is a bat colony in each of two of the caves in the cavern system.
-                            </li>
-                            <li class="list-group-item">
-                                If you enter a cave harboring a bat colony, the bats will swoop down, pick you
-                                up, and ferry you to another cave of their choice in the cavern system.  You may
-                                even be deposited in a cave containing other hazards.
-                            </li>
-                            <li class="list-group-item">
-                                You can tell when a bat colony exists in one of the caves adjoining yours because
-                                you will hear the flapping of wings coming from it
-                            </li>
-                            <li class="list-group-item">
-                                The Wumpus may also be residing in a cave with a bat colony because the Wumpus is
-                                just too heavy for the bats to lift.  If you should wander into such a cave, you
-                                won't be carried off by the bats.  The Wumpus will snag you for a meal instead.
-                            </li>
-                        </ul>
+                <div class="card-header bg-info text-center" id="hunter">
+                    <h4 class="mb-0">
+                        <button class="btn btn-link text-white" data-toggle="collapse"
+                                data-target="#collapse_hunter"
+                                aria-expanded="true" aria-controls="collapse_hunter">
+                            Hunter
+                        </button>
+                    </h4>
+                </div>
+                <div id="collapse_hunter" class="collapse"
+                     aria-labelledby="hunter" data-parent="#game_board_accordion">
+                    <div class="card-body">
+                        <div class="card-text">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    This is you.  The hunter starts the game is a cave containing no hazards.  However,
+                                    hazards may exist in neighboring caves.
+                                </li>
+                                <li class="list-group-item">
+                                    The hunter (you) is equipped with a quiver containing 5 arrows.  If you exhaust
+                                    your complement of arrows without killing the Wumpus, you will be at the mercy of
+                                    the Wumpus.  It is just a matter of time until the Wumpus catches up to you
+                                </li>
+                                <li class="list-group-item">
+                                    The hunter may either enter an adjoining cave or shoot an arrow into an adjoining
+                                    cave.
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-4">
+
             <div class="card">
-                <div class="card-header text-white bg-info text-center">Wumpus</div>
-                <div class="card-body">
-                    <div class="card-text">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                Fortunately for you, there is only one Wumpus living in the cavern system.
-                                Initially the Wumpus is sleeping peacefully in its cave.
-                            </li>
-                            <li class="list-group-item">
-                                If you enter the cave containing the Wumpus, the Wumpus awakens and snacks on you.
-                            </li>
-                            <li class="list-group-item">
-                                You can tell when a Wumpus is nearby because it smells awful.  In fact, its odor
-                                is so pervasive that you can detect it when the Wumpus is as much as two caves
-                                removed from your location.
-                            </li>
-                            <li class="list-group-item">
-                                If you shoot an arrow into the cave containing the Wumpus, you will slay the
-                                Wumpus.  However, if you shoot an arrow into a cave that does not contain the
-                                Wumpus, the Wumpus will awaken and start looking for you.  Fortunately for you,
-                                the Wumpus can't smell you.
-                            </li>
-                            <li class="list-group-item">
-                                Once you have awakened the Wumpus, it will move to another cave with every move
-                                you make.  So any past evidence of its presence becomes obsolete information
-                                rather quickly.
-                            </li>
-                        </ul>
+                <div class="card-header bg-info text-center" id="status">
+                    <h4 class="mb-0">
+                        <button class="btn btn-link text-white" data-toggle="collapse"
+                                data-target="#collapse_status"
+                                aria-expanded="true" aria-controls="collapse_status">
+                            Status and Field Notes
+                        </button>
+                    </h4>
+                </div>
+                <div id="collapse_status" class="collapse"
+                     aria-labelledby="status" data-parent="#game_board_accordion">
+                    <div class="card-body">
+                        <div class="card-text">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    The status pane provides current information as to the yours whereabouts, whether you
+                                    have encountered any hazards or whether any are close by and whether you have slain the
+                                    Wumpus.
+                                </li>
+                                <li class="list-group-item">
+                                    The field notes display the parts of the cavern system that you have mapped, including
+                                    where you encountered the feeling, sound, and/or smell associated with each of the
+                                    various potential dangers.  Cave where nearby hazards were detected are shown in
+                                    yellow.  Hover over one to see what hazards were noted there.
+                                </li>
+                                <li class="list-group-item">
+                                    Once the Wumpus is awake and moving, past indications on the map of the wumpus'
+                                    location are removed since those notes are no longer relevant.
+                                </li>
+                                <li class="list-group-item">
+                                    Those caves that are known but as yet unexplored are in black.  Those caves having no
+                                    nearby hazards are in green.  The cave the hunter is currently within is identified
+                                    with an asterisk.
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div class="col-6" id="hazard_accordion">
+
+            <div class="card">
+                <div class="card-header text-white bg-info text-center" id="wumpus">
+                    <h4 class="mb-0">
+                        <button class="btn btn-link text-white" data-toggle="collapse"
+                                data-target="#collapse_wumpus"
+                                aria-expanded="true" aria-controls="collapse_wumpus">
+                            Wumpus
+                        </button>
+                    </h4>
+                </div>
+                <div id="collapse_wumpus" class="collapse"
+                     aria-labelledby="wumpus" data-parent="#hazard_accordion">
+                    <div class="card-body">
+                        <div class="card-text">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    Fortunately for you, there is only one Wumpus living in the cavern system.
+                                    Initially the Wumpus is sleeping peacefully in its cave.
+                                </li>
+                                <li class="list-group-item">
+                                    If you enter the cave containing the Wumpus, the Wumpus awakens and snacks on you.
+                                </li>
+                                <li class="list-group-item">
+                                    You can tell when a Wumpus is nearby because it smells awful.  In fact, its odor
+                                    is so pervasive that you can detect it when the Wumpus is as much as two caves
+                                    removed from your location.
+                                </li>
+                                <li class="list-group-item">
+                                    If you shoot an arrow into the cave containing the Wumpus, you will slay the
+                                    Wumpus.  However, if you shoot an arrow into a cave that does not contain the
+                                    Wumpus, the Wumpus will awaken and start looking for you.  Fortunately for you,
+                                    the Wumpus can't smell you.
+                                </li>
+                                <li class="list-group-item">
+                                    Once you have awakened the Wumpus, it will move to another cave with every move
+                                    you make.  So any past evidence of its presence becomes obsolete information
+                                    rather quickly.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header text-white bg-info text-center" id="pit">
+                    <h4 class="mb-0">
+                        <button class="btn btn-link text-white" data-toggle="collapse"
+                                data-target="#collapse_pit"
+                                aria-expanded="true" aria-controls="collapse_pit">
+                            Bottomless Pit
+                        </button>
+                    </h4>
+                </div>
+                <div id="collapse_pit" class="collapse"
+                         aria-labelledby="pit" data-parent="#hazard_accordion">
+                    <div class="card-body">
+                        <div class="card-text">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    There is a bottomless pit in each of two of the caves in the cavern system.
+                                </li>
+                                <li class="list-group-item">
+                                    If you enter a cave housing a bottomless pit, you will die.
+                                </li>
+                                <li class="list-group-item">
+                                    You can tell when a bottomless pit exists in one of the caves adjoining yours because
+                                    you will feel a draft coming from it.
+                                </li>
+                                <li class="list-group-item">
+                                    The Wumpus may also be residing in a cave with a bottomless pit because the Wumpus has
+                                    sucker feet and can stick to the sides of the bottomless pit.  If you should wander
+                                    into such a cave, you won't fall into the abyss.  Instead, the Wumpus will awaken,
+                                    pluck you out of the air and eat you!
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header text-white bg-info text-center" id="bat">
+                    <h4 class="mb-0">
+                        <button class="btn btn-link text-white" data-toggle="collapse" data-target="#collapse_bat"
+                                aria-expanded="true" aria-controls="collapse_bat">
+                            Bat Colony
+                        </button>
+                    </h4>
+                </div>
+                <div id="collapse_bat" class="collapse"
+                     aria-labelledby="bat" data-parent="#hazard_accordion">
+                    <div class="card-body">
+                        <div class="card-text">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    There is a bat colony in each of two of the caves in the cavern system.
+                                </li>
+                                <li class="list-group-item">
+                                    If you enter a cave harboring a bat colony, the bats will swoop down, pick you
+                                    up, and ferry you to another cave of their choice in the cavern system.  You may
+                                    even be deposited in a cave containing other hazards.
+                                </li>
+                                <li class="list-group-item">
+                                    You can tell when a bat colony exists in one of the caves adjoining yours because
+                                    you will hear the flapping of wings coming from it
+                                </li>
+                                <li class="list-group-item">
+                                    The Wumpus may also be residing in a cave with a bat colony because the Wumpus is
+                                    just too heavy for the bats to lift.  If you should wander into such a cave, you
+                                    won't be carried off by the bats.  The Wumpus will snag you for a meal instead.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endblock %}
