@@ -1,0 +1,1 @@
+# Convenient place for log files when the website is being used in stand-alone mode.

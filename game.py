@@ -1,5 +1,4 @@
 from datetime import datetime
-import pprint
 import random
 
 from pieces.cavern_system import CavernSystem, Cave
@@ -8,8 +7,8 @@ from pieces.hunter import Hunter
 from pieces.notebook import Notebook
 from pieces.wumpus import Wumpus
 import glob, os, os.path
-
-from status_message import StatusMessage
+from flask import current_app
+from pprint import pformat
 
 
 class Game:
@@ -52,9 +51,9 @@ class Game:
         once awoken.
         :return:
         """
-        # pprint.pprint(self.cavern_system.cavern_system)
+        current_app.logger.debug(pformat(self.cavern_system.cavern_system))
         for hazard in self.hazards:
-            print(hazard)
+            current_app.logger.debug(hazard)
 
     @ staticmethod
     def start_up(seed=None):

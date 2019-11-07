@@ -29,14 +29,14 @@
                     }
                 }
                 $.ajax({
-                    url: "{{url_for('move')}}",
+                    url: "{{url_for('turn')}}",
                     data: JSON.stringify({"move": move, "cave_id": cave_id}),
                     dataType: "json",
                     contentType: "application/json",
                     type: 'POST',
                     success: function(response) {
                         console.log(response);
-                        let status = response['status'];
+                        let messages = response['messages'];
                         let cave_ids = response['cave_ids'];
                         arrows = response['arrows'];
                         let game_over = response['game_over'];
@@ -50,19 +50,18 @@
                         if(status) {
                             statusBadge.show();
                         }
-                        let statusList = "";
-                        status.forEach(function(item) {
-                            console.log(item.type);
+                        let messageList = "";
+                        messages.forEach(function(message) {
                             let color_class = 'text-default';
-                            if(item.type === 'WARNING') {
+                            if(message.type === 'WARNING') {
                                 color_class = 'text-warning'
                             }
-                            if(item.type === 'TERMINAL') {
+                            if(message.type === 'TERMINAL') {
                                 color_class = 'text-danger'
                             }
-                            statusList += "<li class='list-group-item " + color_class + "'>" + item.content + "</li>";
+                            messageList += "<li class='list-group-item " + color_class + "'>" + message.content + "</li>";
                         });
-                        statusMessages.html(statusList);
+                        statusMessages.html(messageList);
 
                         if(game_over) {
                             let game_button = "<div class='text-center'><a class='btn btn-primary' href='/'>New Game?</a></div>";

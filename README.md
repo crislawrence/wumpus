@@ -12,8 +12,8 @@ cd <directory path>
 git clone git@github.com:crislawrence/wumpus.git
 ```
 
-Enter the project and set up a virtual environment using python 3.7 (assuming the resident
-python 3 version is in python3.
+Enter the project and set up a virtual environment using python 3.6+ (assuming the resident
+python 3.6+ version is in python3).
 
 ```bash
 cd <directory path>/wumpus

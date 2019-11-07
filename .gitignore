@@ -5,3 +5,4 @@ venv*
 .idea
 __pycache__
 pieces/__pycache__
+logs/*.log

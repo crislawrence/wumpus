@@ -10,3 +10,10 @@ class StatusMessage:
 
     def __repr__(self):
         return f"Status message: type: {self.type}, source: {self.source}, content: {self.content}"
+
+    def to_json(self):
+        return {
+            "type": self.type,
+            "source": self.source,
+            "content": self.content
+        }

@@ -1,21 +1,38 @@
-from pprint import pprint
+from logging.handlers import RotatingFileHandler
 
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template, session, request, json, jsonify
 from markupsafe import Markup
 import os
+import logging
 
 from game import Game
 
+logger = logging.getLogger("")
 
 app = Flask(__name__)
 load_dotenv(find_dotenv(usecwd=True))
 app.config.from_object('config_default')
 app.config.from_envvar('APPLICATION_SETTINGS')
 
+# Format for file logging.
+formatter = logging.Formatter('%(asctime)s \t%(levelname)s\t%(module)s\t%(process)d\t%(thread)d\t%(message)s')
+
+
+# File logger - rotates for every 1Mb up to 5 files.
+file_handler = RotatingFileHandler(os.environ["LOG_FILE"], maxBytes=1_000_000, backupCount=5)
+file_handler.setLevel(os.environ.get('LOG_LEVEL', logging.WARN))
+file_handler.setFormatter(formatter)
+logger.setLevel(os.environ.get('LOG_LEVEL', logging.WARN))
+logger.addHandler(file_handler)
+
 
 @app.route('/', methods=['GET'])
 def start():
+    """
+    Sets up the game initially and returns a game board along with those initial conditions.
+    :return: web page containing a game board
+    """
 
     debug = app.config.get('DEBUG', False)
     Game.start_up(seed=app.config.get('SEED', None))
@@ -23,28 +40,33 @@ def start():
     status = game.hunter.start_up(game.hazards)
     if debug:
         game.display_configuration()
-        print(game.hunter)
+        logger.debug(game.hunter)
 
+    # Sadly, flask makes use of client-side sessions in the form of a session cookie.  So the state of the game must be
+    # json serializable and small enough to be accommodated in a cookie.
     session['game'] = game.to_json()
 
     cave_id = game.hunter.cave.id
     game.hunter.notebook.consult_notebook(cave_id)
 
-    cavern_map = None
     with open(os.path.join(f"notes/notebook_{cave_id}.gv.svg"), 'r') as svg_file:
         cavern_map = Markup(svg_file.read())
-
-    #pprint(status)
 
     return render_template("game_board.html", game=game, status=status, cavern_map=cavern_map)
 
 
-@app.route('/move', methods=['POST'])
-def move():
+@app.route('/turn', methods=['POST'])
+def turn():
+    """
+    Response to an ajax request containing the hunter's turn selections (enter or shoot and cave id).  The only error
+    possible if the browser is used properly, is the omission of a cave id selection.
+    :return: json containing game status messages, arrows remaining, whether the game is over (won or lost), and
+    the cavern map.
+    """
 
     debug = app.config.get('DEBUG', False)
     game = Game.from_json(session['game'])
-    status = []
+    messages = []
     errors = []
 
     cave_id = json.loads(request.data).get('cave_id', None)
@@ -59,11 +81,14 @@ def move():
 
     if not errors:
         if debug and not game.wumpus.asleep:
-            print(game.wumpus)
+            logger.debug(game.wumpus)
         if move == 'e':
-            status, errors = game.hunter.enter(cave_id, game.hazards)
+            messages, errors = game.hunter.enter(cave_id, game.hazards)
         else:
-            status, errors = game.hunter.shoot(cave_id, game.hazards)
+            messages, errors = game.hunter.shoot(cave_id, game.hazards)
+
+        # Sadly, flask makes use of client-side sessions in the form of a session cookie.  So the state of the game
+        # must be json serializable and small enough to be accommodated in a cookie.
         session['game'] = game.to_json()
 
     if errors:
@@ -73,21 +98,22 @@ def move():
     # cave the hunter shoots into (in the event that the hunter took a shot).
     game.hunter.notebook.consult_notebook(game.hunter.cave.id)
 
-    cavern_map = None
-    with open(os.path.join(f"notes/notebook_{game.hunter.cave.id}.gv.svg"),'r') as svg_file:
+    with open(os.path.join(f"notes/notebook_{game.hunter.cave.id}.gv.svg"), 'r') as svg_file:
         cavern_map = svg_file.read()
 
-    status_json = [{"type": status_message.type, "source": status_message.source, "content": status_message.content}
-                   for status_message in status]
-
-    return jsonify({"status": status_json,
+    return jsonify({"messages": [message.to_json() for message in messages],
                     "cave_ids": game.hunter.cave.neighboring_caves,
                     "arrows": game.hunter.quiver,
                     "game_over": not(game.wumpus.alive and game.hunter.alive),
                     "notes": cavern_map}), 200
 
+
 @app.route('/rules', methods=['GET'])
 def rules():
+    """
+    Provides a static web page containing the rules of the game.
+    :return: game rules page
+    """
     return render_template("rules.html")
 
 
