@@ -1,5 +1,4 @@
 from collections import namedtuple
-from pprint import pprint
 
 from graphviz import Graph
 
@@ -7,9 +6,10 @@ from status_message import StatusMessage
 
 Mapped_Site = namedtuple("Mapped_Site", ["cave", "warnings"])
 
+
 class Notebook:
 
-    def __init__(self, cave=None, cavern_map=None):
+    def __init__(self, cavern_map=None):
         if cavern_map:
             self.cavern_map = cavern_map
         else:
@@ -21,14 +21,14 @@ class Notebook:
         for mapped_cave in self.cavern_map:
             warning_sources = ""
             if mapped_cave.warnings:
-                dot.attr('node',color='yellow')
+                dot.attr('node', color='yellow')
                 warning_sources = ",".join([warning.source for warning in mapped_cave.warnings])
             else:
                 dot.attr('node', color='green')
             current_location = '*' if mapped_cave.cave.id == step else ''
             dot.node(f'{mapped_cave.cave.id}',
                      f'{mapped_cave.cave.id} {current_location}',
-                     _attributes=[('tooltip',f'{warning_sources}')])
+                     _attributes=[('tooltip', f'{warning_sources}')])
         for tunnel in tunnels:
             dot.attr('node', color='black')
             dot.edge(f'{tunnel[0]}', f'{tunnel[1]}')
@@ -50,7 +50,7 @@ class Notebook:
         if wumpus_moving:
             for mapped_site in self.cavern_map:
                 old_wumpus_warning = [warning for warning in mapped_site.warnings if warning.source == 'WUMPUS']
-                if(old_wumpus_warning):
+                if old_wumpus_warning:
                     mapped_site.warnings.remove(old_wumpus_warning[0])
 
         # Avoid adding duplicates if the hunter backtracks.  If the wumpus is moving about the newer version of the
@@ -86,6 +86,3 @@ class Notebook:
             mapped_site = Mapped_Site(cave, status_messages)
             cavern_map.append(mapped_site)
         return cavern_map
-
-
-

@@ -26,11 +26,18 @@ class Hunter:
             self.notebook.note_position(self.cave, warnings)
 
     def start_up(self, hazards):
-        status = [StatusMessage('INFO', 'GENERAL', f"You are starting in cave {self.cave.id}")]
+        """
+        Only called when the game is being initialized.  The hunter will not be placed with any hazards to begin with
+        (that wouldn't be sporting) but the hunter may be close to one or more hazards in nearby caves.  The initial
+        cavern map will show the cave the hunter starts in along with the three adjoining caves.
+        :param hazards: list of game hazards
+        :return: list of status messages
+        """
+        messages = [StatusMessage('INFO', 'GENERAL', f"You are starting in cave {self.cave.id}")]
         warnings = self.check_for_hazards(hazards)
         self.notebook.note_position(self.cave, warnings)
-        status.extend(warnings)
-        return status
+        messages.extend(warnings)
+        return messages
 
     def enter(self, cave_id, hazards, via_bat=False):
         """
@@ -87,59 +94,90 @@ class Hunter:
         return status, errors
 
     def shoot(self, cave_id, hazards):
-        status = []
+        """
+        The hunter is shooting an arrow into the provided cave id.  The will either kill the wumpus or cause the wumpus
+        to awaken and move about in search of the hunter.
+        :param cave_id: the id of the cave the hunter is shooting into
+        :param hazards: lising of the game's hazards
+        :return: a tuple containing a list of status messages and a list of error messages, if any errors are found.
+        """
+        messages = []
         errors = []
 
-        status.extend([StatusMessage('INFO', 'GENERAL', f"{self}")])
+        # Orientation message for the hunter (although s/he did not move)
+        messages.extend([StatusMessage('INFO', 'GENERAL', f"{self}")])
 
+        # Must have an arrow left to shoot in the first place.
         if self.quiver > 0:
 
+            # Get the Wumpus object from the hazard list.  This is the only hazard of possible concern here since
+            # the Wumpus is the only hazard that can move about.
             wumpus = [hazard for hazard in hazards if hazard.hazard_type == 'WUMPUS'][0]
 
+            # Spend the arrow and provide a message to that effect
             self.quiver -= 1
-            status.extend([StatusMessage('INFO', 'GENERAL',
-                                         f"You've shot an arrow into {cave_id}.  "
-                                         f"You have {self.quiver} arrows remaining.")])
-            status.extend(wumpus.react_to_shot(cave_id))
+            messages.extend([StatusMessage('INFO', 'GENERAL',
+                                           f"You've shot an arrow into {cave_id}.  "
+                                           f"You have {self.quiver} arrows remaining.")])
 
+            # The wumpus may react to the shot in one of two ways.  It either dies or it wakes up (if not already
+            # awake) and starts hunting the hunter
+            messages.extend(wumpus.react_to_shot(cave_id))
+
+            # If the wumpus is still alive, the wumpus will get a turn at finding the hunter
             if wumpus.alive:
 
-                wumpus = [hazard for hazard in hazards if hazard.hazard_type == 'WUMPUS'][0]
+                if self.quiver == 0:
+                    messages.extend([StatusMessage('WARNING', 'GENERAL',
+                                                   "You have no arrows left.  All you can do is avoid the wumpus.")])
+
+                # This actually caused the Wumpus to move only if the Wumpus if awake.  Wumpus's do not walk in their
+                # sleep.
                 wumpus.move()
 
                 # Check to see if the wumpus has entered this cave, which will result in the demise of the hunter.
                 dangers = self.check_for_encounters([wumpus])
-                status.extend(dangers)
+                messages.extend(dangers)
 
                 # If the hunter remains alive, check to see if the wumpus is now proximate to this cave and note
                 # that finding in the notebook.
                 if self.alive:
                     warnings = self.check_for_hazards(hazards)
-                    status.extend(warnings)
+                    messages.extend(warnings)
                     self.notebook.note_position(self.cave, warnings, not wumpus.asleep)
         else:
-            status.extend([StatusMessage('WARNING', 'GENERAL',
-                                         "You have no arrows left.  All you can do is avoid the wumpus.")])
-        return status, errors
+            messages.extend([StatusMessage('WARNING', 'GENERAL',
+                                           "You have no arrows left.  All you can do is avoid the wumpus.")])
+        return messages, errors
 
     def killed(self):
+        """
+        Kills the hunter.  That unfortunate fact is conveyed in the status message returned.
+        :return: list of a single status message indicating the demise of the hunter.
+        """
         self.alive = False
         return [StatusMessage('TERMINAL', 'GENERAL', "You've been killed.  Sorry.")]
 
     def check_for_hazards(self, hazards):
-        status = []
+        """
+        Iterate over the game's hazards to determine whether any are proximate to the hunter.  Any that are, are noted
+        in the status messages returned
+        :param hazards: listing of game hazards
+        :return: list of status messages
+        """
+        messages = []
         for hazard in hazards:
             warning = hazard.issue_warning(self.cave.id)
             # Some potential hazards too far removed yet for a warning.
             if warning:
-                status.extend(warning)
-        return status
+                messages.extend(warning)
+        return messages
 
     def check_for_encounters(self, hazards):
         """
         Iterate over the game's hazards to determine whether the hunter has had an unfortunate encounter.  The hazards
         are arranged in the list in decreasing order of lethality.  Consequently, the first encounter obviates the need
-        to check for additional encounters.
+        to check for additional encounters.  Any encounter is noted in the status messages returned.
         :param hazards: listing of game hazards
         :return: list of status messages
         """

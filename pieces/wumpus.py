@@ -27,31 +27,45 @@ class Wumpus(Hazard):
         return [StatusMessage('INFO', self.hazard_type, "Wumpus is awake and stiring!")]
 
     def move(self):
-        status = []
+        """
+        If the Wumpus is awake, it will enter one it the caves adjoining the one it is in which each turn taken.
+        Otherwise the Wumpus stays put.
+        """
         if not self.asleep:
             destination = random.choice(self.cave.neighboring_caves)
             self.cave = self.cavern_system.get_cave(destination)
-        return status
 
-
-    def check_encounter(self, hunter, hazards):
-        status = []
+    def check_encounter(self, hunter, hazards=None):
+        """
+        If the hunter stumbles into the cave containing the Wumpus, the Wumpus will awake if not already awake, and
+        eat the hunter.
+        :param hunter: the hunter object
+        :param hazards: list of game hazards - not relevant for a Wumpus encounter
+        :return: the status messages indicating the hunter's sad end.
+        """
+        messages = []
         if hunter.cave.id == self.cave.id:
-            status.extend(
-                [StatusMessage('TERMINAL', self.hazard_type,
-                              "Uh oh!  You and the wumpus are occupying the same cave now.")])
             if self.asleep:
-                status.extend(self.awakened())
-            status.extend(hunter.killed())
-        return status
+                messages.extend(self.awakened())
+            messages.extend(
+                [StatusMessage('TERMINAL', self.hazard_type,
+                               "Uh oh!  You and the wumpus are occupying the same cave now.")])
+            messages.extend(hunter.killed())
+        return messages
 
     def react_to_shot(self, cave_id):
-        status = []
+        """
+        The Wumpus' reaction to an arrow being shot.  If the arrow is shot into the cave containing the Wumpus, the
+        Wumpus is killed and the hunter has a new trophy.  If the arrow is shot into any other cave, the Wumpus awakens.
+        :param cave_id: the id of the cave into which the arrow is shot
+        :return: a list a status messages indicating the disposition of the Wumpus
+        """
+        messages = []
         if cave_id == self.cave.id:
-            status.extend(self.killed())
+            messages.extend(self.killed())
         elif self.asleep:
-            status.extend(self.awakened())
-        return status
+            messages.extend(self.awakened())
+        return messages
 
     def killed(self):
         self.alive = False
