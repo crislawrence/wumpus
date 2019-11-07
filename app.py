@@ -20,7 +20,7 @@ formatter = logging.Formatter('%(asctime)s \t%(levelname)s\t%(module)s\t%(proces
 
 
 # File logger - rotates for every 1Mb up to 5 files.
-file_handler = RotatingFileHandler(os.environ["LOG_FILE"], maxBytes=1_000_000, backupCount=5)
+file_handler = RotatingFileHandler(os.environ.get("LOG_FILE", 'logs/wumpus.log'), maxBytes=1_000_000, backupCount=5)
 file_handler.setLevel(os.environ.get('LOG_LEVEL', logging.WARN))
 file_handler.setFormatter(formatter)
 logger.setLevel(os.environ.get('LOG_LEVEL', logging.WARN))

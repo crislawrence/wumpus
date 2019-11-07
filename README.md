@@ -37,6 +37,8 @@ cp .env_example .env
 ```
 APPLICATION_SETTINGS=config_default.py (for development) or config.py (for production)
 SECRET_KEY=<Provide a character string to use as a key for the session cookie>
+LOG_FILE=<location for log files.  Remove the entry to default logging to logs/wumpus.log.>
+LOG_LEVEL=<DEBUG, WARN, ERROR>.  Remove the entry to default to WARN
 SEED=<Provide a seed value if reproducible results are desired.  Otherwise, remove the entry>
 ```
 
