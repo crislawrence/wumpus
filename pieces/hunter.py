@@ -127,6 +127,7 @@ class Hunter:
             # If the wumpus is still alive, the wumpus will get a turn at finding the hunter
             if wumpus.alive:
 
+                # Since the Wumpus is still alive, exhausting one's supply of arrows is really a death sentence.
                 if self.quiver == 0:
                     messages.extend([StatusMessage('WARNING', 'GENERAL',
                                                    "You have no arrows left.  All you can do is avoid the wumpus.")])

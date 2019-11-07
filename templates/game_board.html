@@ -7,11 +7,11 @@
             let arrows = 5;
             let choices = $("#choices");
             let moveButtons = $(".move");
+            let shootButton = $("#shoot");
             let caveSelector = $("#cave_id");
             let errorMessages = $("#error_messages");
             let statusMessages = $("#status_messages");
             let errorBadge = $(".badge-danger");
-            let statusBadge = $(".badge-info");
             let notebook = $("#notebook");
             errorBadge.hide();
 
@@ -19,7 +19,6 @@
 
                 errorBadge.hide();
                 errorMessages.empty();
-                statusBadge.hide();
                 let move = this.id;
                 let cave_id = caveSelector.val();
                 if(arrows === 1 && move==='shoot') {
@@ -47,9 +46,6 @@
                         });
                         caveSelector.html(optionList);
 
-                        if(status) {
-                            statusBadge.show();
-                        }
                         let messageList = "";
                         messages.forEach(function(message) {
                             let color_class = 'text-default';
@@ -66,6 +62,9 @@
                         if(game_over) {
                             let game_button = "<div class='text-center'><a class='btn btn-primary' href='/'>New Game?</a></div>";
                             choices.html(game_button)
+                        }
+                        if(arrows === 0) {
+                            shootButton.hide()
                         }
                         if(notes) {
                             notebook.html(notes);
