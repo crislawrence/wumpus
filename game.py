@@ -6,15 +6,26 @@ from pieces.hazard import BottomlessPit, BatColony, Hazard
 from pieces.hunter import Hunter
 from pieces.notebook import Notebook
 from pieces.wumpus import Wumpus
-import glob, os, os.path
+import glob
+import os
+import os.path
 from flask import current_app
 from pprint import pformat
 
 
 class Game:
 
-    def __init__(self, debug=False, cavern_system=None, bottomless_pits=[], bats=[],
-                 hunter=None, wumpus=None):
+    def __init__(self, cavern_system=None, wumpus=None, bottomless_pits=[], bats=[], hunter=None):
+        """
+        Initializes or reconstitutes the game state.  At the start of a game, the cavern system layout, the
+        positions of the hazards and the location of the hunter are established essentially randomly.  At each
+        subsequent turn of the game, the state is reconstituted from existing information.
+        :param cavern_system: the layout of the cavern system
+        :param wumpus: the Wumpus
+        :param bottomless_pits: the bottomless pits
+        :param bats: the bat colonies
+        :param hunter: the hunter
+        """
 
         # Use current cavern system or create a new cavern system.
         self.cavern_system = cavern_system or CavernSystem()
@@ -75,11 +86,6 @@ class Game:
     def to_json(self):
         return {
             "cavern_system": self.cavern_system.cavern_system,
-            "hunter": {
-                "cave_id": self.hunter.cave.id,
-                "quiver": self.hunter.quiver,
-                "explored": self.hunter.notebook.to_json()
-            },
             "wumpus": {
                 "cave_id": self.wumpus.cave.id,
                 "asleep": self.wumpus.asleep
@@ -91,7 +97,8 @@ class Game:
             "bat_colony_cave_ids": [
                 self.bats[0].cave.id,
                 self.bats[1].cave.id
-            ]
+            ],
+            "hunter": self.hunter.to_json()
         }
 
     @staticmethod
@@ -99,15 +106,8 @@ class Game:
         cavern_system_json = json.get("cavern_system")
         caves = [Cave(cave[0], cave[1]) for cave in cavern_system_json]
         cavern_system = CavernSystem(caves)
-        hunter_json = json.get("hunter")
-        wumpus_json = json.get("wumpus")
-        cavern_map = Notebook.from_json(cavern_system, hunter_json.get("explored"))
-        hunter = Hunter(cavern_system=cavern_system,
-                        cave_id=hunter_json.get("cave_id"),
-                        quiver=hunter_json.get("quiver"),
-                        cavern_map=cavern_map,
-                        hazards=None)
-        wumpus = Wumpus(cavern_system, wumpus_json.get("cave_id"), wumpus_json.get("asleep"))
+        hunter = Hunter.from_json(cavern_system, json.get("hunter"))
+        wumpus = Wumpus.from_json(cavern_system, json.get("wumpus"))
         bottomless_pits = []
         bats = []
         bottomless_pits_json = json.get("bottomless_pit_cave_ids")
@@ -118,8 +118,7 @@ class Game:
             bat_colony = BatColony(cavern_system, bats_json[i])
             bats.append(bat_colony)
         return Game(cavern_system=cavern_system,
+                    wumpus=wumpus,
                     bottomless_pits=bottomless_pits,
                     bats=bats,
-                    hunter=hunter,
-                    wumpus=wumpus)
-
+                    hunter=hunter)

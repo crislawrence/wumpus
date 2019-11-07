@@ -59,3 +59,13 @@ class Wumpus(Hazard):
 
     def __str__(self):
         return super().__str__() + f" Wumpus is {'asleep' if self.asleep else 'awake'}"
+
+    def to_json(self):
+        return {
+            "cave_id": self.cave.id,
+            "asleep": self.asleep
+        }
+
+    @staticmethod
+    def from_json(cavern_system, json):
+        return Wumpus(cavern_system, json.get("cave_id"), json.get("asleep"))

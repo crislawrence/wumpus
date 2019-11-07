@@ -136,14 +136,45 @@ class Hunter:
         return status
 
     def check_for_encounters(self, hazards):
-        status = []
+        """
+        Iterate over the game's hazards to determine whether the hunter has had an unfortunate encounter.  The hazards
+        are arranged in the list in decreasing order of lethality.  Consequently, the first encounter obviates the need
+        to check for additional encounters.
+        :param hazards: listing of game hazards
+        :return: list of status messages
+        """
+        messages = []
         for hazard in hazards:
-            print(hazard)
             encounter = hazard.check_encounter(self, hazards=hazards)
             if encounter:
-                status.extend(encounter)
+                messages.extend(encounter)
                 break
-        return status
+        return messages
 
     def __str__(self):
         return f"You are now in cave {self.cave.id}.  The adjoining caves are {self.cave.neighboring_caves}"
+
+    def to_json(self):
+        """
+        Minimal json object needed to reconstitute the hunter game state
+        :return: jsonified hunter
+        """
+        return {
+            "cave_id": self.cave.id,
+            "quiver": self.quiver,
+            "cavern_map": self.notebook.to_json()
+        }
+
+    @staticmethod
+    def from_json(cavern_system, json):
+        """
+        Restores the hunter game state from a json object and the cavern system
+        :param cavern_system: layout of cavern system
+        :param json: jsonified hunter
+        :return: reconstituted hunter object
+        """
+        return Hunter(cavern_system=cavern_system,
+                      cave_id=json.get("cave_id"),
+                      quiver=json.get("quiver"),
+                      cavern_map=Notebook.from_json(cavern_system, json.get("cavern_map")),
+                      hazards=None)
