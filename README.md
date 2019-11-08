@@ -42,5 +42,11 @@ LOG_LEVEL=<DEBUG, WARN, ERROR>.  Remove the entry to default to WARN
 SEED=<Provide a seed value if reproducible results are desired.  Otherwise, remove the entry>
 ```
 
+Finally, you will need to install graphviz.  I use homebrew on the Mac:
+
+```bash
+brew install graphviz
+```
+
 Hopefully with this much in place, you can start the server from the top level of the wumpus
 project with python app.py (while in the venv).  The home page is on localhost:5000.
