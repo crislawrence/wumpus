@@ -23,6 +23,10 @@ class Wumpus(Hazard):
             set(surrounding_cave_ids))
 
     def awakened(self):
+        """
+        Indicates that the Wumpus has been awakened.
+        :return: list containing the status message that the Wumpus is awake and moving.
+        """
         self.asleep = False
         return [StatusMessage('INFO', self.hazard_type, "Wumpus is awake and stiring!")]
 
@@ -68,6 +72,10 @@ class Wumpus(Hazard):
         return messages
 
     def killed(self):
+        """
+        Indicates whether the Wumpus has been killed.
+        :return: list containing the status message that the Wumpus has been slain.
+        """
         self.alive = False
         return [StatusMessage('TERMINAL', self.hazard_type, "You have slain the wumpus!")]
 
@@ -75,6 +83,10 @@ class Wumpus(Hazard):
         return super().__str__() + f" Wumpus is {'asleep' if self.asleep else 'awake'}"
 
     def to_json(self):
+        """
+        Jsonification containing minimal information needed to preserve the Wumpus' state between moves.
+        :return: json object of Wumpus' state
+        """
         return {
             "cave_id": self.cave.id,
             "asleep": self.asleep
@@ -82,4 +94,10 @@ class Wumpus(Hazard):
 
     @staticmethod
     def from_json(cavern_system, json):
+        """
+        Use of json object to reconstitute the Wumpus object and its current disposition.
+        :param cavern_system: configuration of the cavern system
+        :param json: json object containing current Wumpus state
+        :return: Wumpus object in its current state
+        """
         return Wumpus(cavern_system, json.get("cave_id"), json.get("asleep"))

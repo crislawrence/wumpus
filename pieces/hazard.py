@@ -20,10 +20,22 @@ class Hazard:
         Hazard.hazard_cave_ids.append(cave_id)
 
     def issue_warning(self, hunter_cave_id):
+        """
+        Each hazard contains a Hazard_Perimeter named tuple that identified what caves are sufficiently proximate to
+        the hazard to warrant a warning.
+        :param hunter_cave_id: the hunter's location
+        :return: hazard warning if the hunter is within range of the hazard and None otherwise.
+        """
         if hunter_cave_id in self.hazard_perimeter.included_caves:
             return self.hazard_perimeter.warning
 
     def check_encounter(self, hunter, hazards=None):
+        """
+        Each hazard implements what transpires when the hunter and the hazard occupy the same cave.  Note that the
+        list of hazards is necessary for encounters with bat colonies.
+        :param hunter: the hunter object
+        :param hazards: the list of hazards
+        """
         raise NotImplementedError
 
     def __str__(self):
@@ -32,6 +44,10 @@ class Hazard:
 
 
 class BottomlessPit(Hazard):
+    """
+    The bottomless pit is a deadly hazard.  The hunter is made aware of the danger when s/he is no more than one
+    cave removed from it.
+    """
 
     def __init__(self, cavern_system, cave_id):
         super().__init__(cavern_system, cave_id)
@@ -56,6 +72,11 @@ class BottomlessPit(Hazard):
         return messages
 
 class BatColony(Hazard):
+    """
+    The bat colony is not itself a deadly hazard.  But the bat colony will transport the hunter to a cave which may
+    itself contain a deadly hazard.  So it is something to be avoided.  The hunter is made aware of the danger when
+    s/he is no more than one cave removed from it.
+    """
 
     def __init__(self, cavern_system, cave_id):
         super().__init__(cavern_system, cave_id)
