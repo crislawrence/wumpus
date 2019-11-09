@@ -1,7 +1,7 @@
 # Hunt the Wumpus
 Browser based version of the original hunt the wumpus game.
 
-## Setup for Stand Alone Use
+## Setup for Stand Alone Use (Single Player)
 
 The instructions below relate principally to installations on Mac or Linux machines.
 

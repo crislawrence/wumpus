@@ -66,7 +66,7 @@ class Game:
         for hazard in self.hazards:
             current_app.logger.debug(hazard)
 
-    @ staticmethod
+    @staticmethod
     def start_up(seed=None):
         """
         The method runs only when a new game is begun.  Old cavern_map files are deleted from the notes folder and if
@@ -74,7 +74,8 @@ class Game:
         :param seed: a provided seed for the random number generator.
         """
 
-        # Remove cavern maps from the previous game
+        # Remove cavern maps from the previous game - note that sessions would need to be in separate directories
+        # if the game were to be served to muliple players at once.
         filelist = glob.glob(os.path.join("notes", "notebook_*"))
         for item in filelist:
             os.remove(item)
