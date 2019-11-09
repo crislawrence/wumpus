@@ -74,12 +74,6 @@ class Game:
         :param seed: a provided seed for the random number generator.
         """
 
-        # Remove cavern maps from the previous game - note that sessions would need to be in separate directories
-        # if the game were to be served to muliple players at once.
-        filelist = glob.glob(os.path.join("notes", "notebook_*"))
-        for item in filelist:
-            os.remove(item)
-
         # Create 'random' seed if no seed is provided
         seed = int(seed) if seed else datetime.now()
         random.seed(seed)
