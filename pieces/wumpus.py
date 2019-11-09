@@ -6,6 +6,9 @@ import itertools
 
 
 class Wumpus(Hazard):
+    """
+    The dangerous creature that is the object of the hunt.
+    """
 
     def __init__(self, cavern_system, cave_id, asleep=True):
         super().__init__(cavern_system, cave_id)
