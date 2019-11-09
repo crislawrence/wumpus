@@ -47,12 +47,9 @@ def start():
     session['game'] = game.to_json()
 
     cave_id = game.hunter.cave.id
-    game.hunter.notebook.consult_notebook(cave_id)
+    cavern_map = game.hunter.notebook.consult_notebook(cave_id)
 
-    with open(os.path.join(f"notes/notebook_{cave_id}.gv.svg"), 'r') as svg_file:
-        cavern_map = Markup(svg_file.read())
-
-    return render_template("game_board.html", game=game, status=status, cavern_map=cavern_map)
+    return render_template("game_board.html", game=game, status=status, cavern_map=Markup(cavern_map))
 
 
 @app.route('/turn', methods=['POST'])
@@ -96,16 +93,13 @@ def turn():
 
     # Note that the relevant cave id for the notebook is the cave in which the hunter is located and not the
     # cave the hunter shoots into (in the event that the hunter took a shot).
-    game.hunter.notebook.consult_notebook(game.hunter.cave.id)
-
-    with open(os.path.join(f"notes/notebook_{game.hunter.cave.id}.gv.svg"), 'r') as svg_file:
-        cavern_map = svg_file.read()
+    cavern_map = game.hunter.notebook.consult_notebook(game.hunter.cave.id)
 
     return jsonify({"messages": [message.to_json() for message in messages],
                     "cave_ids": game.hunter.cave.neighboring_caves,
                     "arrows": game.hunter.quiver,
                     "game_over": not(game.wumpus.alive and game.hunter.alive),
-                    "notes": cavern_map}), 200
+                    "notes": Markup(cavern_map)}), 200
 
 
 @app.route('/rules', methods=['GET'])

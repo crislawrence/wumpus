@@ -17,7 +17,7 @@ class Notebook:
 
     def consult_notebook(self, step):
         tunnels = self.find_tunnels()
-        dot = Graph(comment='Your notebook - explored caves', format='svg')
+        dot = Graph(comment='Your notebook - explored caves')
         for mapped_cave in self.cavern_map:
             warning_sources = ""
             if mapped_cave.warnings:
@@ -32,7 +32,9 @@ class Notebook:
         for tunnel in tunnels:
             dot.attr('node', color='black')
             dot.edge(f'{tunnel[0]}', f'{tunnel[1]}')
-        dot.render(f'notes/notebook_{step}.gv', view=False)
+        svg_data = dot.pipe(format='svg')
+        return "".join(chr(datum) for datum in svg_data)
+
 
     def find_tunnels(self):
         tunnels = set()
