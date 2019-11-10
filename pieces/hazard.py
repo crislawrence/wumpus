@@ -12,11 +12,17 @@ class Hazard:
 
     hazard_cave_ids = []
 
-    def __init__(self, cavern_system, cave_id, hazard_perimeter=None):
+    def __init__(self, cavern_system, cave_id):
+        """
+        Initialization of a generic hazard.  All hazards have at least a cave id and specific hazard subclasses must
+        supply a hazard perimeter named tuple.
+        :param cavern_system:  the layout of the cavern system
+        :param cave_id: the id of the cave the hazard is currently found in.
+        """
         self.cave = cavern_system.get_cave(cave_id)
         self.cavern_system = cavern_system
         self.hazard_type = "UNKNOWN"
-        self.hazard_perimeter = hazard_perimeter
+        self.hazard_perimeter = None
         Hazard.hazard_cave_ids.append(cave_id)
 
     def issue_warning(self, hunter_cave_id):
@@ -41,6 +47,25 @@ class Hazard:
     def __str__(self):
          return f"{self.__class__.__name__} in cave {self.cave.id}." \
                 f"  Hazard perimeter: {self.hazard_perimeter.included_caves}."
+
+    def to_json(self):
+        """
+        In general, only the cave id is needed to supply a jsonified version of the hazard
+        :return: the id of the cave currently occupied by the hazard
+        """
+        return self.cave.id
+
+    @classmethod
+    def from_json(cls, cavern_system, json):
+        """
+        The cavern system and the json object containing the cave id is all that is needed to reconstitute the basic
+        hazard in the proper state.
+        :param cavern_system: the layout of the cavern system
+        :param cave_id: the id of the cave which the hazard currently occupies.
+        :return: the reconstituted Hazard object
+        """
+        return cls(cavern_system, json)
+
 
 
 class BottomlessPit(Hazard):

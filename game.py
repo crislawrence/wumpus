@@ -4,11 +4,7 @@ import random
 from pieces.cavern_system import CavernSystem, Cave
 from pieces.hazard import BottomlessPit, BatColony, Hazard
 from pieces.hunter import Hunter
-from pieces.notebook import Notebook
 from pieces.wumpus import Wumpus
-import glob
-import os
-import os.path
 from flask import current_app
 from pprint import pformat
 
@@ -85,14 +81,8 @@ class Game:
                 "cave_id": self.wumpus.cave.id,
                 "asleep": self.wumpus.asleep
             },
-            "bottomless_pit_cave_ids": [
-                self.bottomless_pits[0].cave.id,
-                self.bottomless_pits[1].cave.id
-            ],
-            "bat_colony_cave_ids": [
-                self.bats[0].cave.id,
-                self.bats[1].cave.id
-            ],
+            "bottomless_pits": [bottomless_pit.to_json() for bottomless_pit in self.bottomless_pits],
+            "bat_colonies": [bat_colony.to_json() for bat_colony in self.bats],
             "hunter": self.hunter.to_json()
         }
 
@@ -103,15 +93,8 @@ class Game:
         cavern_system = CavernSystem(caves)
         hunter = Hunter.from_json(cavern_system, json.get("hunter"))
         wumpus = Wumpus.from_json(cavern_system, json.get("wumpus"))
-        bottomless_pits = []
-        bats = []
-        bottomless_pits_json = json.get("bottomless_pit_cave_ids")
-        bats_json = json.get("bat_colony_cave_ids")
-        for i in range(2):
-            bottomless_pit = BottomlessPit(cavern_system, bottomless_pits_json[i])
-            bottomless_pits.append(bottomless_pit)
-            bat_colony = BatColony(cavern_system, bats_json[i])
-            bats.append(bat_colony)
+        bottomless_pits = [BottomlessPit.from_json(cavern_system, bottomless_pit) for bottomless_pit in json.get("bottomless_pits")]
+        bats = [BatColony.from_json(cavern_system, bat_colony) for bat_colony in json.get("bat_colonies")]
         return Game(cavern_system=cavern_system,
                     wumpus=wumpus,
                     bottomless_pits=bottomless_pits,
