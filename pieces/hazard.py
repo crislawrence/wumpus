@@ -5,6 +5,7 @@ from status_message import StatusMessage
 
 Hazard_Perimeter = namedtuple("Hazard_Perimeter", ["warning", "included_caves"])
 
+
 class Hazard:
     """
     A generic version of a hazard from which all game hazards descend.
@@ -45,8 +46,8 @@ class Hazard:
         raise NotImplementedError
 
     def __str__(self):
-         return f"{self.__class__.__name__} in cave {self.cave.id}." \
-                f"  Hazard perimeter: {self.hazard_perimeter.included_caves}."
+        return f"{self.__class__.__name__} in cave {self.cave.id}." \
+               f"  Hazard perimeter: {self.hazard_perimeter.included_caves}."
 
     def to_json(self):
         """
@@ -61,11 +62,10 @@ class Hazard:
         The cavern system and the json object containing the cave id is all that is needed to reconstitute the basic
         hazard in the proper state.
         :param cavern_system: the layout of the cavern system
-        :param cave_id: the id of the cave which the hazard currently occupies.
+        :param json: essentially, the id of the cave which the hazard currently occupies.
         :return: the reconstituted Hazard object
         """
         return cls(cavern_system, json)
-
 
 
 class BottomlessPit(Hazard):
@@ -96,6 +96,7 @@ class BottomlessPit(Hazard):
             messages.extend(hunter.killed())
         return messages
 
+
 class BatColony(Hazard):
     """
     The bat colony is not itself a deadly hazard.  But the bat colony will transport the hunter to a cave which may
@@ -122,12 +123,12 @@ class BatColony(Hazard):
         """
         messages = []
         if hunter.cave.id == self.cave.id:
-            hunter_cave_id_options = [item for item in list(range(1,21)) if item != self.cave.id]
+            hunter_cave_id_options = [item for item in list(range(1, 21)) if item != self.cave.id]
             new_cave_id = random.choice(hunter_cave_id_options)
             messages.extend(
                 [StatusMessage('INFO', self.hazard_type,
-                              "You've stumbled into a bat colony.  "
-                              "Some of the bats are carrying you into another cave!")])
+                               "You've stumbled into a bat colony.  "
+                               "Some of the bats are carrying you into another cave!")])
             updated_status, _ = hunter.enter(new_cave_id, hazards, via_bat=True)
             messages.extend(updated_status)
         return messages

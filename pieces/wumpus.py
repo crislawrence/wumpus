@@ -11,6 +11,14 @@ class Wumpus(Hazard):
     """
 
     def __init__(self, cavern_system, cave_id, asleep=True):
+        """
+        Initialize the Wumpus object.  Uses the cavern system to find the cave associated with the cave id.  The
+        optional parameters are used when the Wumpus is being unmarshalled from the client-side session.
+        :param cavern_system:  the configuration of the caves
+        :param cave_id: id of the cave the Wumpus is in
+        :param asleep: whether the Wumpus is asleep.  The Wumpus starts the game asleep but is awakened by a flying
+        arrow and remains awake for the remainder of the game.
+        """
         super().__init__(cavern_system, cave_id)
         self.hazard_type = 'WUMPUS'
         self.asleep = asleep
@@ -18,6 +26,9 @@ class Wumpus(Hazard):
         self.establish_hazard_perimeter()
 
     def establish_hazard_perimeter(self):
+        """
+        The Wumpus hazard permeter extends as far as two caves removed from the Wumpus' location.
+        """
         surrounding_caves = [self.cavern_system.get_cave(cave_id) for cave_id in self.cave.neighboring_caves]
         surrounding_cave_ids = list(itertools.chain(*[cave.neighboring_caves for cave in surrounding_caves]))
         surrounding_cave_ids.extend(self.cave.neighboring_caves)
@@ -95,8 +106,8 @@ class Wumpus(Hazard):
             "asleep": self.asleep
         }
 
-    @staticmethod
-    def from_json(cavern_system, json):
+    @classmethod
+    def from_json(cls, cavern_system, json):
         """
         Use of json object to reconstitute the Wumpus object and its current disposition.
         :param cavern_system: configuration of the cavern system
