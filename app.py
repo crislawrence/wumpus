@@ -102,6 +102,12 @@ def turn():
                     "notes": Markup(cavern_map)}), 200
 
 
+@app.route('/check_quiver', methods=['GET'])
+def check_quiver():
+
+    game = Game.from_json(session['game'])
+    return {"arrows": game.hunter.quiver}
+
 @app.route('/rules', methods=['GET'])
 def rules():
     """
