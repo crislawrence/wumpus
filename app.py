@@ -52,8 +52,8 @@ def start():
     return render_template("game_board.html", game=game, status=status, cavern_map=Markup(cavern_map))
 
 
-@app.route('/turn', methods=['POST'])
-def turn():
+@app.route('/take_turn', methods=['POST'])
+def take_turn():
     """
     Response to an ajax request containing the hunter's turn selections (enter or shoot and cave id).  The only error
     possible if the browser is used properly, is the omission of a cave id selection.
@@ -104,6 +104,10 @@ def turn():
 
 @app.route('/check_quiver', methods=['GET'])
 def check_quiver():
+    """
+    Determines the number of arrows left in the hunter's quiver.
+    :return: json object indicating number of arrows remaining.
+    """
 
     game = Game.from_json(session['game'])
     return {"arrows": game.hunter.quiver}
@@ -114,6 +118,7 @@ def rules():
     Provides a static web page containing the rules of the game.
     :return: game rules page
     """
+
     return render_template("rules.html")
 
 

@@ -3,16 +3,12 @@
 
     <script>
 
-        $(document).ready ( function() {
+        $(document).ready (function() {
 
-            let errorBadge = $(".badge-danger");
-            errorBadge.hide();
-
-            let turnButtons = $(".turn");
-
-            turnButtons.on('click', function() {
-                process_turn("{{url_for('check_quiver')}}", "{{url_for('turn')}}", this.id);
+            $(".turn").on('click', function() {
+                process_turn("{{url_for('check_quiver')}}", "{{url_for('take_turn')}}", this.id);
             });
+
         });
 
     </script>
@@ -22,7 +18,7 @@
     </div>
 
 
-    <div class="row">
+    <div class="row error-section d-none">
         <div class="col-5">
             <div class="badge badge-danger">Errors</div>
             <ul id="error_messages" class="text-danger"></ul>
