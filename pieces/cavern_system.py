@@ -1,9 +1,9 @@
 import random
-from graphviz import Graph
 import pprint
 from collections import namedtuple
 
 Cave = namedtuple("Cave", ["id", "neighboring_caves"])
+
 
 class CavernSystem:
     """
@@ -21,14 +21,13 @@ class CavernSystem:
         a dictionary into a list and named tuples since the cavern arrangement does not change over the course of
         the game.
         """
-        self.cavern_system = cavern_system if cavern_system else [Cave(cave_id, neighboring_caves)
-                              for cave_id, neighboring_caves
-                              in CavernSystem.create_cavern_system().items()]
-        #self.tunnels = self.find_tunnels()
+        self.cavern_system = cavern_system if cavern_system \
+            else [Cave(cave_id, neighboring_caves)
+                  for cave_id, neighboring_caves
+                  in CavernSystem.create_cavern_system().items()]
 
     def __str__(self):
         return [cave for cave in self.cavern_system]
-
 
     @staticmethod
     def create_cavern_system():
@@ -46,9 +45,9 @@ class CavernSystem:
         available_caves = list(CavernSystem.CAVES)
 
         # All caves in the cavern system must be linked to exactly NEIGHBORING_CAVE_COUNT neighboring caves.
-        while(any([len(neighboring_caves) < CavernSystem.NEIGHBORING_CAVE_COUNT
-                   for neighboring_caves
-                   in caverns.values()])):
+        while (any([len(neighboring_caves) < CavernSystem.NEIGHBORING_CAVE_COUNT
+                    for neighboring_caves
+                    in caverns.values()])):
 
             # Iterate over all the caves in the cavern system
             for cave in CavernSystem.CAVES:
@@ -134,34 +133,20 @@ class CavernSystem:
                     available_caves.remove(cave_to_populate)
                 break
 
-    @staticmethod
-    def find_tunnels(cavern_system):
-        tunnels = set()
-        for cave in cavern_system:
-            for neighboring_cave in cave.neighboring_caves:
-                tunnel = (cave.id, neighboring_cave) if cave.id < neighboring_cave else (neighboring_cave, cave.id)
-                tunnels.add(tunnel)
-        return tunnels
-
-    @staticmethod
-    def create_diagram(cavern_system, step):
-        tunnels = CavernSystem.find_tunnels(cavern_system)
-        dot = Graph(comment='The Caverns')
-        for cave in cavern_system:
-            dot.node(f'{cave.id}', f'{cave.id}')
-        for tunnel in tunnels:
-            dot.edge(f'{tunnel[0]}', f'{tunnel[1]}')
-        dot.render(f'caverns_{step}.gv', view=True)
-
     def get_cave(self, cave_id):
+        """
+        Returns the cave named tuple associated with the cave id provided if the cave id is valid (i.e., between 1
+        and 20 inclusive).  Otherwise the method returns None.
+        :param cave_id: the cave id for which the cave named tuple is sought.
+        :return: the appropriate cave named tuple, if found or None.
+        """
         if not (1 <= cave_id <= 20):
             return None
-        return [Cave for Cave in self.cavern_system if Cave.id == cave_id][0]
+        return [cave for cave in self.cavern_system if cave.id == cave_id][0]
+
 
 if __name__ == "__main__":
-    # Direct call for debugging.
+    # Direct call for debugging purposes.
     random.seed(20)
     cavern_system = CavernSystem()
     pprint.pprint(cavern_system.__str__())
-    pprint.pprint(cavern_system.tunnels)
-    cavern_system.show_diagram()

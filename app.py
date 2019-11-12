@@ -46,8 +46,7 @@ def start():
     # json serializable and small enough to be accommodated in a cookie.
     session['game'] = game.to_json()
 
-    cave_id = game.hunter.cave.id
-    cavern_map = game.hunter.notebook.consult_notebook(cave_id)
+    cavern_map = game.hunter.notebook.consult_notebook(game.hunter.cave.id)
 
     return render_template("game_board.html", game=game, status=status, cavern_map=Markup(cavern_map))
 

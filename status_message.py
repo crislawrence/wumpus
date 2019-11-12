@@ -5,15 +5,15 @@ class StatusMessage:
     more applicable.  I did this because the list of status messages grows, method by method.
     """
 
-    def __init__(self, type, source, content):
+    def __init__(self, message_type, source, content):
         """
         Message describing some aspect of the game state.  The type and souce of the message were used for filtering
         and highlighting.
-        :param type: INFO, WARNING, TERMINAL
+        :param message_type: INFO, WARNING, TERMINAL
         :param source: WUMPUS, BOTTOMLESS_PIT, BAT_COLONY, GENERAL
         :param content: message content.
         """
-        self.type = type
+        self.type = message_type
         self.source = source
         self.content = content
 
@@ -25,7 +25,8 @@ class StatusMessage:
 
     def to_json(self):
         """
-        Converts the object into a json compatible dictionary that can be delivered via ajax.
+        Converts the object into a json compatible dictionary that can be delivered via ajax and can be used to
+        help reconstitute the game state.
         :return: json compatible dictionary
         """
         return {
@@ -33,3 +34,12 @@ class StatusMessage:
             "source": self.source,
             "content": self.content
         }
+
+    @staticmethod
+    def from_json(json):
+        """
+        Restores the status message game state from a json object
+        :param json: the json object holding the status message state
+        :return: the reconstituted status message
+        """
+        return StatusMessage(json['type'], json['source'], json['content'])
