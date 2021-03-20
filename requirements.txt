@@ -4,7 +4,7 @@ colorama==0.4.1
 Flask==1.1.1
 graphviz==0.13
 itsdangerous==1.1.0
-Jinja2==2.10.3
+Jinja2==2.11.3
 MarkupSafe==1.1.1
 python-dotenv==0.10.3
 Werkzeug==0.16.0
